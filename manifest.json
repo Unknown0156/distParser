@@ -1,0 +1,29 @@
+{
+	"manifest_version": 2,
+	"name": "RosDistant parser",
+	"description": "Создание БД тестов Росдистанта",
+	"version": "1.0",
+	"offline_enabled": true,
+	"icons": {
+		"128": "images/icon_128.png"
+	},
+	"browser_action": {
+		"default_icon": {
+			"128": "images/icon_128.png"
+		},
+		"default_popup": "popup.html"
+	},
+    "content_scripts": [
+        {
+            "matches": ["*://*.rosdistant.ru/*"],
+    		"js": ["content.js"],
+    		"run_at": "document_end",
+    		"all_frames": false
+        }
+    ],
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": false
+	  },
+	"permissions": ["tabs", "<all_urls>", "alarms"]
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">	
+    <title>Distant parcer</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <script src="popup.js"></script>
+</head>
+<body>
+    <!--контейнер, содержащий название, логотип и номер версии-->
+  <div class="modal-header">
+    <h1 class="logo">
+      <img class="logo-icon" src="images/icon_128.png"> Дистант парсер
+      <span class="version">(1.0)</span>
+   </h1>
+  </div>
+  <!--Конец контейнера-->
+
+  <!--контейнер, содержащий описание функций расширения-->
+  <div class="modal-content">
+    <p>Автоматическое создание базы данных тестов Росдистанта</p>
+  </div>
+  <!--Конец контейнера-->
+
+  <!--контейнер, содержащий контейнеры с иконками-->
+  <div class="modal-icons">
+    <div class="flex-container">
+      <div class="flex">
+        <a href=# target="_blank">
+          <img class="logo-icon" src="images/icon_128.png">
+        </a>
+      </div>
+      <div class="flex">
+        <input type="button" class="uibtn" id="showbtn" value="Show">
+      </div>
+      <div class="flex">
+        <input type="button" class="uibtn" id="savebtn" value="Save">
+      </div>
+      <div class="flex">
+        <input type="button" class="uibtn" id="stopbtn" value="Stop">
+      </div>
+    </div>
+  </div>
+  <div id="qa"></div>
+</body>
+</html>
