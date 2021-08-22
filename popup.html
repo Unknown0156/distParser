@@ -8,40 +8,50 @@
     <script src="popup.js"></script>
 </head>
 <body>
-    <!--контейнер, содержащий название, логотип и номер версии-->
+
+  <!--контейнер, содержащий название, логотип и номер версии-->
   <div class="modal-header">
     <h1 class="logo">
-      <img class="logo-icon" src="images/icon_128.png"> Дистант парсер
-      <span class="version">(1.0)</span>
+      <a href=# target="_blank">
+      <img class="logo-icon" src="images/icon_128.png"></a> Дистант парсер
+      <span class="version">(1.2)</span>
    </h1>
   </div>
   <!--Конец контейнера-->
 
   <!--контейнер, содержащий описание функций расширения-->
   <div class="modal-content">
-    <p>Автоматическое создание базы данных тестов Росдистанта</p>
+    <p>Автоматическое создание базы данных тестов Росдистанта
+      <a href=https://edu.rosdistant.ru target="_blank">
+        <img class="logo-icon" src="images/icon_128.png">
+      </a>
+    </p>
   </div>
   <!--Конец контейнера-->
 
-  <!--контейнер, содержащий контейнеры с иконками-->
-  <div class="modal-icons">
+  <!--контейнер, содержащий контейнеры интерфейса-->
+  <div class="modal-interface">
     <div class="flex-container">
       <div class="flex">
-        <a href=# target="_blank">
-          <img class="logo-icon" src="images/icon_128.png">
-        </a>
+        <input type="button" class="uibtn" id="startbtn" value="Запустить">
       </div>
       <div class="flex">
-        <input type="button" class="uibtn" id="showbtn" value="Show">
+        <input type="button" class="uibtn" id="stopbtn" value="Остановить">
       </div>
       <div class="flex">
-        <input type="button" class="uibtn" id="savebtn" value="Save">
+        <p id="ansquan">Ответов получено:0</p>
       </div>
+    </div>
+    <div class="flex-container">
       <div class="flex">
-        <input type="button" class="uibtn" id="stopbtn" value="Stop">
+        <input type="button" class="uibtn" id="showbtn" value="Показать ответы">
+      </div> 
+      <div class="flex">
+        <input type="button" class="uibtn" id="savebtn" value="Сохранить ответы">
       </div>
     </div>
   </div>
-  <div id="qa"></div>
+  <div id="qa">
+  </div>
 </body>
 </html>

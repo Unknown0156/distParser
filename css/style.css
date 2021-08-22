@@ -5,18 +5,12 @@
     body {
       font-family: 'Open Sans', sans-serif;
       font-size: 14px;
-      margin: 0;
-      min-height: 180px;
+      margin: auto;
+      min-height: 150px;
       padding: 0;
-      width: 380px;
-    }
-    /*задаём настройки для заголовков первого уровня*/
-    h1 {
-      font-family: 'Menlo', monospace;
-      font-size: 22px;
-      font-weight: 400;
-      margin: 0;
-      color: #2f5876;
+      min-width: 460px;
+      max-width: 960px;
+      background-color: #f6f5f3;
     }
     a:link,
     a:visited {
@@ -27,43 +21,69 @@
     .modal-header {
       align-items: center; /*выравнивание элементов по центру*/
       border-bottom: 0.5px solid #dadada; /*свойства нижней разделительной линии*/
-      height: 50px;
+      height: 40px;
+      background-color: #ffffff;
+    }
+    h1 {
+      font-family: 'Menlo', monospace;
+      font-size: 22px;
+      font-weight: 400;
+      color: #2f5876;
+      text-align: center;
+      margin: 0;
     }
     .modal-content {
-      padding: 0 22px; /*отступы сверху и снизу, сверху и слева*/
+      align-items: center;
+      text-align: center;
+      background-color: #ffffff;
     }
-    .modal-icons {
-      border-top: 0.5px solid #dadada; /*свойства верхней разделительной линии*/
-      height: 50px;
-      width: 100%;
+    .modal-content p{
+      margin: auto;
+    }
+    .modal-content a:hover{
+      opacity: 0.4;
     }
     .logo {
-      padding: 16px; /*отступы со всех сторон*/
+      padding: 5px; /*отступы со всех сторон*/
     }
     .logo-icon {
         width: 30px; /*ширина изображений*/
         vertical-align: text-bottom; /*выравнивание по нижней части текста*/
         margin-right: 12px; /*задётся отступ элементов от изображения*/
-      }
+    }
     .version {
       color: #444;
       font-size: 18px;
     }
 
+    .modal-interface {
+      border-top: 0.5px solid #dadada; /*свойства верхней разделительной линии*/
+      background-color: #ffffff;
+    }
     .flex-container {
         display: flex; /*отображает контейнер в виде блочного элемента*/
-        justify-content: space-between; /*равномерное выравнивание элементов*/
-        padding: 10px 22px;
-      }
-      /*задаём настройки для контейнеров с иконками*/
-    .flex {
-      opacity: 1; /*параметр непрозрачности иконок*/
-      width: 120px;
+        padding: 10px;
+        margin: auto;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 0.5px solid #dadada; /*свойства нижней разделительной линии*/
     }
-    .flex:hover {
+    .flex-container p {
+      margin: 0;
+    }
+    /*задаём настройки для контейнеров с элементами управления*/
+    .flex {
+      padding: 0 10px;
+      opacity: 1; /*параметр непрозрачности кнопок*/
+    }
+    .uibtn {
+      opacity: 1;
+    }
+    .uibtn:hover {
       opacity: 0.4; /*уровень непрозрачности при наведении курсора на элемент*/
     }
 
     #qa {
-      font-size: 10px;
+      font-size: 12px;
+      background-color: #ffffff;
     }

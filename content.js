@@ -1,13 +1,24 @@
+login=document.querySelector(".logininfo .dropdown-toggle").textContent;
 
-function checkUser(params) {
-    x=document.querySelector(".toogle-menu").textContent;
-    if(ajax.xHttpRequest(x,)){
-        alert("Слышь купи");
-        return true;
-    } 
-    return false;
-}
+chrome.runtime.sendMessage({type:"msg", value:"running"}, function(response) {
+        if (response){
+            autoparse();
+        }else{
+            
+        }
+    }
+);
 
+chrome.runtime.onMessage.addListener( (message) => {
+    if (message.action="start"){
+        autoparse();
+    }
+} );
+
+//Функция автовыполнения и парсинга теста
+function autoparse() {
+if(login!="Евгений Аникиев")
+    return;
 starttest=document.querySelectorAll('input[value="Пройти тест заново"]');
 if(starttest[0]==null){
     starttest=document.querySelectorAll('input[value="Продолжить последнюю попытку"]');
@@ -45,15 +56,22 @@ if (question!=null){
     answer=document.getElementsByClassName("rightanswer");
     if(answer[0]!=null){
         qaobj.answer=answer[0].textContent;
-        qaobj.title=document.querySelector('span[tabindex="0"]').textContent;
+        title=document.querySelector('span[tabindex="0"]').textContent;
+        if(title!=0){
+            qaobj.title=title;
+        }
         chrome.runtime.sendMessage(qaobj);
     }
+    
 }
 
 next=document.querySelector('[title="Далее"]');
 if(next!=null){
     next.click();
 }
+}
+
+
 
 /*endoverview=document.querySelector(".submitbtns a");
 if(endoverview!=null){
