@@ -1,4 +1,7 @@
-login=document.querySelector(".logininfo .dropdown-toggle").textContent;
+user=document.querySelector(".logininfo .dropdown-toggle");
+if(user!=null){
+    username=user.textContent;
+}
 
 chrome.runtime.sendMessage({type:"msg", value:"running"}, function(response) {
         if (response){
@@ -17,14 +20,20 @@ chrome.runtime.onMessage.addListener( (message) => {
 
 //Функция автовыполнения и парсинга теста
 function autoparse() {
-if(login!="Евгений Аникиев")
+if(username!="Евгений Аникиев")
     return;
+
+starttest=document.querySelectorAll('input[value="Начать"]')
+if(starttest[0]==null){
 starttest=document.querySelectorAll('input[value="Пройти тест заново"]');
 if(starttest[0]==null){
     starttest=document.querySelectorAll('input[value="Продолжить последнюю попытку"]');
     if(starttest[0]!=null){
         starttest[0].click();    
     }
+}else{
+    starttest[0].click();
+}
 }else{
     starttest[0].click();
 }
@@ -70,8 +79,6 @@ if(next!=null){
     next.click();
 }
 }
-
-
 
 /*endoverview=document.querySelector(".submitbtns a");
 if(endoverview!=null){

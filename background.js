@@ -31,6 +31,12 @@ if(request.type=="msg"){
         case "stop":
             running=false;
             break;
+        case "count":
+            chrome.runtime.sendMessage({
+                msg: "qacount",
+                length: qa.length
+            })
+            break;
         case "running":
             if(running){
                 sendResponse(true);

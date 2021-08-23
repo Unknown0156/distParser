@@ -28,6 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    var full = document.getElementById('fullbtn');
+    full.addEventListener('click', function() {
+        fulllink=document.createElement('a');
+        fulllink.href="#";
+        fulllink.target="_blank";
+        fulllink.click();
+    });
+
     var save = document.getElementById('savebtn');
     save.addEventListener('click', function() {
         chrome.runtime.sendMessage({
@@ -37,8 +45,27 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+//Количество ответов
+qacount=document.querySelector("#qacount");
+    if(qacount!=null){
+        chrome.runtime.sendMessage({type:"msg", value:"count"});
+    }
+var intervalId = window.setInterval(function(){
+    qacount=document.querySelector("#qacount");
+    if(qacount!=null){
+        chrome.runtime.sendMessage({type:"msg", value:"count"});
+    }
+}, 1000);
+
 //Получение данных с бэкграунда
 chrome.runtime.onMessage.addListener(request=>{
+    if(request.msg== "qacount"){
+        qacount=document.querySelector("#qacount");
+        if(qacount!=null){
+            qacount.innerHTML="Ответов получено: "+request.length;
+        }
+    }
+
     if (request.msg == "showqa") {
         var qa=document.getElementById("qa");
         qa.innerHTML="";
@@ -103,4 +130,5 @@ chrome.runtime.onMessage.addListener(request=>{
         a.download = request.fname+".json";
         a.click();
     }
+
 });
