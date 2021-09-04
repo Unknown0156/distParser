@@ -1,39 +1,49 @@
+function sendParse(qaobj) {
+    subject=document.querySelector('.breadcrumb li:nth-child(2) a');
+    if(subject!=null){
+        qaobj.subject=subject.textContent;
+    }
+    theme=document.querySelector('.breadcrumb li:nth-child(3) span[tabindex="0"]');
+    if(theme!=null){
+        qaobj.theme=theme.textContent;
+    }
+    testnum=document.querySelector('.breadcrumb li:last-child a');
+    if(testnum!=null){
+        qaobj.testnum=testnum.textContent;
+    }
+    username=document.querySelector(".logininfo .dropdown-toggle");
+    if(username!=null){
+        qaobj.username=username.textContent;
+    }
+    profession=document.querySelector(".logininfo .nav>li:last-child");
+    if(profession!=null){
+        qaobj.profession=profession.textContent;
+    }
+    chrome.runtime.sendMessage(qaobj);    
+}
+
 //Парсинг и отправка на бэк
 function parse() {
     question=document.querySelector(".qtext");
     if (question!=null){
         qaobj={type:"data"};
-        qaobj.question=question.textContent;
-        image=document.querySelector(".qtext img");
-        if(image!=null){
-            qaobj.image=image.src;
-        }else{
-            qaobj.image="";
-        }
+        qaobj.question=question.innerHTML;
         answer=document.querySelector(".rightanswer");
         if(answer!=null){
-            qaobj.answer=answer.textContent;
-            subject=document.querySelector('.breadcrumb li:nth-child(2) a');
-            if(subject!=null){
-                qaobj.subject=subject.textContent;
+            qaobj.answer=answer.innerHTML;
+            sendParse(qaobj);
+        }else{
+            answer=document.querySelector('.r0.correct')
+            if(answer!=null){
+                qaobj.answer=answer.innerHTML;
+                sendParse(qaobj);
+            }else{
+                answer=document.querySelector('.r1.correct')  
+                if(answer!=null){
+                    qaobj.answer=answer.innerHTML;
+                    sendParse(qaobj);
+                }  
             }
-            theme=document.querySelector('.breadcrumb li:nth-child(3) span[tabindex="0"]');
-            if(theme!=null){
-                qaobj.theme=theme.textContent;
-            }
-            testnum=document.querySelector('.breadcrumb li:last-child a');
-            if(testnum!=null){
-                qaobj.testnum=testnum.textContent;
-            }
-            username=document.querySelector(".logininfo .dropdown-toggle");
-            if(username!=null){
-                qaobj.username=username.textContent;
-            }
-            profession=document.querySelector(".logininfo .nav>li:last-child");
-            if(profession!=null){
-                qaobj.profession=profession.textContent;
-            }
-            chrome.runtime.sendMessage(qaobj);
         }
     }    
 }

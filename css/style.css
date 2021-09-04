@@ -8,7 +8,7 @@
       margin: auto;
       min-height: 150px;
       padding: 0;
-      min-width: 460px;
+      min-width: 420px;
       max-width: 960px;
       background-color: #f6f5f3;
     }
@@ -33,7 +33,6 @@
       margin: 0;
     }
     .modal-content {
-      align-items: center;
       text-align: center;
       background-color: #ffffff;
     }
@@ -64,12 +63,12 @@
         display: flex; /*отображает контейнер в виде блочного элемента*/
         padding: 10px;
         margin: auto;
-        align-items: center;
+        
         justify-content: center;
         border-bottom: 0.5px solid #dadada; /*свойства нижней разделительной линии*/
     }
     .flex-container p {
-      margin: 0;
+      margin: auto;
     }
     /*задаём настройки для контейнеров с элементами управления*/
     .flex {
@@ -84,6 +83,6 @@
     }
 
     #qa {
-      font-size: 12px;
+      text-align: center;
       background-color: #ffffff;
     }

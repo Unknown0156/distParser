@@ -18,13 +18,14 @@ async function sendqa(newqa) {
 }
 
 //Проверка пользователя
-async function checkAuth(username) {
+async function checkAuth(user, prof) {
     const response = await fetch(srv+"/auth",{
         method: 'POST',
         headers: {
-            'Content-Type': 'text/plain'
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
         },
-        body: username
+        body: JSON.stringify({username:user, profession:prof})
     });    
     return response.status;
 }
@@ -32,7 +33,7 @@ async function checkAuth(username) {
 //Добавление вопроса/ответа в массив и на сервер
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 if(request.type=="data"){
-    //Отправка на сервер
+
     request.version=version;
 
     //Проверка тот же ли тест
@@ -42,19 +43,19 @@ if(request.type=="data"){
     }
 
     //Проверка аутентификации
-    checkAuth(request.username)
+    checkAuth(request.username, request.profession)
     .then(status=>{
         var found=false;
         qadb.forEach(element => {
-            if(element.question==request.question && element.image==request.image){
+            if(element.question==request.question){
                 found=true;
                 return;
             }
         })
-        if((!found) && (qadb.length<3 || status<400)){
+        if((!found) && (qadb.length<5 || status<400)){
             sendqa(request)
             .then(status=>{
-                if (status<400)
+                if ( qadb.length<5 || status<400)
                 qadb.push(request);
             })
         }
@@ -69,9 +70,6 @@ if(request.type=="msg"){
             break;
         case "stop":
             autorun=false;
-            break;
-        case "count":
-            sendResponse(qadb.length);
             break;
         case "autorun":
             if(autorun){

@@ -1,35 +1,48 @@
-//Работа интерфейса
-document.addEventListener('DOMContentLoaded', function() {
-    
-    //Запуск авторежима
-    var start = document.getElementById('startbtn');
-    start.addEventListener('click', function() {
-        chrome.runtime.sendMessage({type:"msg", value:"start"});
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-            chrome.tabs.sendMessage(tabs[0].id, {action: "start"});  
-        });
-    });
+const srv="https://distsrv.downshift.keenetic.pro";
+const version=chrome.runtime.getManifest().version;
 
-    //Отсановка авторежима
-    var stop = document.getElementById('stopbtn');
-    stop.addEventListener('click', function() {
-        chrome.runtime.sendMessage({type:"msg", value:"stop"});
-    });
+//Проверка пользователя
+async function checkAuth(user, prof) {
+    const response = await fetch(srv+"/auth",{
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({username:user, profession:prof})
+    });    
+    return response.status;
+}
 
-    //Показать ответы
-    var show = document.getElementById('showbtn');
-    show.addEventListener('click', function() {
+async function tgLink() {
+    const response = await fetch(srv+"/tg",{
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json, text/plain, */*',
+        },
+    });    
+    return response.text();
+}
+
+//Функция вывода данных
+function showData() {
+    var qacount=document.getElementById("qacount");
+    var qa=document.getElementById("qa");
+    if(qacount!=null && qa!=null){
         chrome.runtime.sendMessage({type:"msg", value:"show"}, function(response){
-            var qa=document.getElementById("qa");
+            if(qacount.innerHTML==("Ответов получено: "+response.length))
+                return;
+            qacount.innerHTML="Ответов получено: "+response.length;
             qa.innerHTML="";
+            if(response[0]==null)
+                return;
             var tbl = document.createElement('table');
             tbl.style.width = '100%';
             tbl.setAttribute('border', '1');
             tbl.setAttribute('cellpadding', '4');
             tbl.setAttribute('cellspacing', '0');
             var tcap=document.createElement('caption');
-            if(response[0]!=null)
-                tcap.append(response[0].theme);
+            tcap.append(response[0].subject+'>'+response[0].theme);
             tbl.appendChild(tcap);
             var thead=document.createElement('thead');
             var tr=document.createElement('tr');
@@ -52,24 +65,55 @@ document.addEventListener('DOMContentLoaded', function() {
                 itd.append(++i);
                 tr.appendChild(itd);
                 var qtd = document.createElement('td');
-                qtd.append(element.question);
-                if(element.image!=""){
-                    var img = document.createElement('img');
-                    img.setAttribute("src", element.image);
-                    qtd.append(img);
-                }
                 tr.appendChild(qtd);
+                qtd.insertAdjacentHTML('afterbegin', '<span>'+element.question+'</span>');
                 var atd = document.createElement('td');
-                atd.append(element.answer);
                 tr.appendChild(atd);
+                atd.insertAdjacentHTML('afterbegin', '<span>'+element.answer+'</span>');
                 tbdy.appendChild(tr);
             });
             tbl.appendChild(tbdy);
-            qa.appendChild(tbl);    
+            qa.appendChild(tbl);
+            checkAuth(response[0].username, response[0].profession)
+            .then(status=>{
+                tgLink()
+                .then(tglink=>{
+                    if(status>200){    
+                        qa.insertAdjacentHTML('afterbegin', '<span style="color: red">Вы используете демо версию приложения, ограниченную тремя ответами. Перейдите в телеграмм-канал чтобы получить полную версию:</span><br><a class="uibtn" href='+tglink+' target=_blank><img src="images/tg.png"></a>');
+                    }else{
+                        qa.insertAdjacentHTML('beforeend', '<span>По всем вопросам обращаться в телеграм-канал:</span><br><a class="uibtn" href='+tglink+' target=_blank><img src="images/tg.png"></a>');
+                    }
+                })
+                
+            })
+        });
+    }    
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    //Вывод данных
+    showData();
+    let intervalId = window.setInterval(function(){
+        showData();
+    }, 500);
+
+    //Запуск авторежима
+    var start = document.getElementById('startbtn');
+    start.addEventListener('click', function() {
+        chrome.runtime.sendMessage({type:"msg", value:"start"});
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+            chrome.tabs.sendMessage(tabs[0].id, {action: "start"});  
         });
     });
 
-    //Расширение в отдельном окне
+    //Остановка авторежима
+    var stop = document.getElementById('stopbtn');
+    stop.addEventListener('click', function() {
+        chrome.runtime.sendMessage({type:"msg", value:"stop"});
+    });
+
+    //Расширение в отдельной вкладке
     var full = document.getElementById('fullbtn');
     full.addEventListener('click', function() {
         fulllink=document.createElement('a');
@@ -78,19 +122,22 @@ document.addEventListener('DOMContentLoaded', function() {
         fulllink.click();
     });
 
+    //Расширение в отдельном окне
+    var newwindow=document.getElementById('nwbtn');
+    newwindow.addEventListener('click', function() {
+        chrome.windows.create({
+            url: chrome.runtime.getURL("popup.html"),
+            type: "popup",
+            focused: true,
+            width: 560,
+            height: 860,
+            left: 600
+          });   
+    }) 
+
     //Сбросить ответы
     var reset = document.getElementById('resetbtn');
     reset.addEventListener('click', function() {
         chrome.runtime.sendMessage({type:"msg", value:"reset"});
     });
 });
-
-//Количество ответов
-let intervalId = window.setInterval(function(){
-    qacount=document.getElementById("qacount");
-    if(qacount!=null){
-        chrome.runtime.sendMessage({type:"msg", value:"count"}, function(response){
-            qacount.innerHTML="Ответов получено: "+response;
-        });
-    }
-}, 500);
