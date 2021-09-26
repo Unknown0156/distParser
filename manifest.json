@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "RosDistant parser",
-	"description": "Создание БД тестов Росдистанта",
+	"description": "Автоматизация тестов Росдистанта",
 	"version": "1.4",
 	"offline_enabled": false,
 	"icons": {

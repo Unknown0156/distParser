@@ -1,19 +1,20 @@
 const srv="https://distsrv.downshift.keenetic.pro";
 const version=chrome.runtime.getManifest().version;
 
-//Проверка пользователя
-async function checkAuth(user, prof) {
+//проверка доступа
+async function checkAuth(name, prof) {
     const response = await fetch(srv+"/auth",{
         method: 'POST',
         headers: {
             'Accept': 'application/json, text/plain, */*',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({username:user, profession:prof})
+        body: JSON.stringify({username:name, profession:prof})
     });    
     return response.status;
 }
 
+//получение ссылки на телеграм
 async function tgLink() {
     const response = await fetch(srv+"/tg",{
         method: 'GET',
@@ -24,7 +25,7 @@ async function tgLink() {
     return response.text();
 }
 
-//Функция вывода данных
+//функция вывода данных
 function showData() {
     var qacount=document.getElementById("qacount");
     var qa=document.getElementById("qa");
@@ -36,6 +37,8 @@ function showData() {
             qa.innerHTML="";
             if(response[0]==null)
                 return;
+
+            //построение таблицы с вопрос-ответом
             var tbl = document.createElement('table');
             tbl.style.width = '100%';
             tbl.setAttribute('border', '1');
@@ -74,6 +77,8 @@ function showData() {
             });
             tbl.appendChild(tbdy);
             qa.appendChild(tbl);
+
+            //проверка авторизации и вывод ссылки на телеграм
             checkAuth(response[0].username, response[0].profession)
             .then(status=>{
                 tgLink()
@@ -91,14 +96,13 @@ function showData() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    
-    //Вывод данных
+    //вывод данных по таймеру
     showData();
     let intervalId = window.setInterval(function(){
         showData();
     }, 500);
 
-    //Запуск авторежима
+    //запуск авторежима
     var start = document.getElementById('startbtn');
     start.addEventListener('click', function() {
         chrome.runtime.sendMessage({type:"msg", value:"start"});
@@ -107,13 +111,13 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    //Остановка авторежима
+    //остановка авторежима
     var stop = document.getElementById('stopbtn');
     stop.addEventListener('click', function() {
         chrome.runtime.sendMessage({type:"msg", value:"stop"});
     });
 
-    //Расширение в отдельной вкладке
+    //расширение в отдельной вкладке
     var full = document.getElementById('fullbtn');
     full.addEventListener('click', function() {
         fulllink=document.createElement('a');
@@ -122,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fulllink.click();
     });
 
-    //Расширение в отдельном окне
+    //расширение в отдельном окне
     var newwindow=document.getElementById('nwbtn');
     newwindow.addEventListener('click', function() {
         chrome.windows.create({
@@ -135,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
           });   
     }) 
 
-    //Сбросить ответы
+    //очистить вопросы-ответы
     var reset = document.getElementById('resetbtn');
     reset.addEventListener('click', function() {
         chrome.runtime.sendMessage({type:"msg", value:"reset"});

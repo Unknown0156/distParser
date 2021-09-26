@@ -1,10 +1,11 @@
 const srv="https://distsrv.downshift.keenetic.pro";
 const version=chrome.runtime.getManifest().version;
 var qadb=[];
+var showdb=[];
 var title="";
 var autorun=false;
 
-//Отправка данных на сервер
+//отправка данных на сервер
 async function sendqa(newqa) {
     const response = await fetch(srv+"/newqa",{
         method: 'POST',
@@ -17,52 +18,40 @@ async function sendqa(newqa) {
     return response.status;
 }
 
-//Проверка пользователя
-async function checkAuth(user, prof) {
-    const response = await fetch(srv+"/auth",{
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({username:user, profession:prof})
-    });    
-    return response.status;
-}
-
-//Добавление вопроса/ответа в массив и на сервер
+//добавление вопроса/ответа в массив и базу данных на сервере
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 if(request.type=="data"){
-
+    //версия расширения
     request.version=version;
 
-    //Проверка тот же ли тест
+    //проверка тот же ли тест
     if(title!=request.theme){
         title=request.theme;
         qadb=[];
     }
 
-    //Проверка аутентификации
-    checkAuth(request.username, request.profession)
-    .then(status=>{
-        var found=false;
-        qadb.forEach(element => {
-            if(element.question==request.question){
-                found=true;
-                return;
-            }
-        })
-        if((!found) && (qadb.length<5 || status<400)){
-            sendqa(request)
-            .then(status=>{
-                if ( qadb.length<5 || status<400)
-                qadb.push(request);
-            })
+    //проверка был ли этот вопрос
+    var found=false;
+    qadb.forEach(element => {
+        if(element.question==request.question){
+            found=true;
+            return;
         }
     })
+    if(!found){
+        sendqa(request)
+        .then(status=>{
+            qadb.push(request);
+            if(status<400){
+                showdb=qadb;
+            }else{
+                showdb=qadb.slice(0,5);
+            }
+        })
+    }
 }
 
-//Сообщения от попап окна и контент скрипта
+//сообщения от попап окна и контент скрипта
 if(request.type=="msg"){
     switch (request.value) {
         case "start":
@@ -79,7 +68,7 @@ if(request.type=="msg"){
             }
             break;
         case "show":
-            sendResponse(qadb);
+            sendResponse(showdb);
             break;
         case "reset":
             qadb=[];
