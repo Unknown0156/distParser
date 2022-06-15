@@ -1,8 +1,8 @@
 const srv="https://distsrv.downshift.keenetic.pro";
 const version=chrome.runtime.getManifest().version;
 var qadb=[];
-var showdb=[];
 var title="";
+var auth=false;
 var autorun=false;
 
 //отправка данных на сервер
@@ -43,9 +43,9 @@ if(request.type=="data"){
         .then(status=>{
             qadb.push(request);
             if(status<400){
-                showdb=qadb;
+                auth=true;
             }else{
-                showdb=qadb.slice(0,5);
+                auth=false;
             }
         })
     }
@@ -61,14 +61,17 @@ if(request.type=="msg"){
             autorun=false;
             break;
         case "autorun":
-            if(autorun){
-                sendResponse(true);
-            }else{
-                sendResponse(false);
-            }
+            sendResponse(autorun);
             break;
         case "show":
-            sendResponse(showdb);
+            if(auth){
+                sendResponse(qadb);
+            }else{
+                sendResponse(qadb.slice(0,5));
+            }
+            break;
+        case "auth":
+            sendResponse(auth);
             break;
         case "reset":
             qadb=[];

@@ -1,19 +1,6 @@
 const srv="https://distsrv.downshift.keenetic.pro";
 const version=chrome.runtime.getManifest().version;
 
-//проверка доступа
-async function checkAuth(name, prof) {
-    const response = await fetch(srv+"/auth",{
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json, text/plain, */*',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({username:name, profession:prof})
-    });    
-    return response.status;
-}
-
 //получение ссылки на телеграм
 async function tgLink() {
     const response = await fetch(srv+"/tg",{
@@ -26,7 +13,7 @@ async function tgLink() {
 }
 
 //функция вывода данных
-function showData() {
+function showData(tglink) {
     var qacount=document.getElementById("qacount");
     var qa=document.getElementById("qa");
     if(qacount!=null && qa!=null){
@@ -79,17 +66,12 @@ function showData() {
             qa.appendChild(tbl);
 
             //проверка авторизации и вывод ссылки на телеграм
-            checkAuth(response[0].username, response[0].profession)
-            .then(status=>{
-                tgLink()
-                .then(tglink=>{
-                    if(status>200){    
-                        qa.insertAdjacentHTML('afterbegin', '<span style="color: red">Вы используете демо версию приложения, ограниченную тремя ответами. Перейдите в телеграмм-канал чтобы получить полную версию:</span><br><a class="uibtn" href='+tglink+' target=_blank><img src="images/tg.png"></a>');
-                    }else{
-                        qa.insertAdjacentHTML('beforeend', '<span>По всем вопросам обращаться в телеграм-канал:</span><br><a class="uibtn" href='+tglink+' target=_blank><img src="images/tg.png"></a>');
-                    }
-                })
-                
+            chrome.runtime.sendMessage({type:"msg", value:"auth"}, function(response){
+                if(response){
+                    qa.insertAdjacentHTML('beforeend', '<span>По всем вопросам обращаться в телеграм-канал:</span><br><a class="uibtn" href='+tglink+' target=_blank><img src="images/tg.png"></a>');
+                }else{
+                    qa.insertAdjacentHTML('afterbegin', '<span style="color: red">Вы используете демо версию приложения, ограниченную тремя ответами. Перейдите в телеграмм-канал чтобы получить полную версию:</span><br><a class="uibtn" href='+tglink+' target=_blank><img src="images/tg.png"></a>');
+                }
             })
         });
     }    
@@ -97,10 +79,13 @@ function showData() {
 
 document.addEventListener('DOMContentLoaded', function() {
     //вывод данных по таймеру
-    showData();
-    let intervalId = window.setInterval(function(){
-        showData();
-    }, 500);
+    tgLink()
+    .then(tglink=>{
+        showData(tglink);
+        let intervalId = window.setInterval(function(){
+            showData(tglink);
+        }, 500);
+    })
 
     //запуск авторежима
     var start = document.getElementById('startbtn');

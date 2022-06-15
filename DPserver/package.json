@@ -1,0 +1,20 @@
+{
+  "name": "dp-server",
+  "version": "1.0.0",
+  "description": "Server for RosDistant parser",
+  "author": "Pavel_Unknown <paxando@gmail.com> (https://www.linkedin.com/in/pavel-unknown)",
+  "homepage": "https://distsrv.downshift.keenetic.pro",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": ["parser", "automation", "testing"],
+  "license": "ISC",
+  "dependencies": {
+    "console-stamp": "^3.0.3",
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  }
+}

@@ -1,0 +1,24 @@
+/*общие настройки для всего документа*/
+html,
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 14px;
+  margin: auto;
+  min-height: 150px;
+  padding: 0;
+  min-width: 420px;
+  max-width: 960px;
+  background-color: #f6f5f3;
+}
+a:link,
+a:visited {
+  color:#4588BD;
+  outline: 0;
+  text-decoration: none;
+}
+a:hover{
+  opacity: 0.4;
+}
+p{
+  margin: auto;
+}
